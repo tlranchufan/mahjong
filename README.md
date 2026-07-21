@@ -8,7 +8,8 @@ A static GitHub Pages website connected to Supabase for:
 - four chip types (white 1, red 5, blue 10, green 25);
 - a modifiable default allocation (initially five of each);
 - settlement calculations and leaderboard resets;
-- approved match and reset history.
+- approved match and reset history;
+- rules and scoring reference pages.
 
 ## Part 1 — Create the Supabase database
 
@@ -74,6 +75,7 @@ For a complete match, the net changes submitted by all players should add to zer
 - Page appearance: `css/styles.css`
 - Database permissions and tables: `supabase/setup.sql`
 - Public pages: the `.html` files in the repository root
+- Rule and scoring reference files: `assets/`
 
 ## Local preview
 
@@ -84,3 +86,11 @@ python -m http.server 8000
 ```
 
 Then open `http://localhost:8000`.
+
+
+## Rules and scoring pages
+
+- `rules.html` contains a quick rules summary and the supplied overview diagram.
+- `scoring.html` contains the fan-to-points table, worked payment examples, and the supplied two-page scoring cheat sheet.
+- Keep the `assets/` folder when uploading to GitHub. The Rules and Scoring pages depend on these images and the reference PDF.
+- The supplied scoring sheet uses “discarder pays all.” Confirm your league's minimum fan, dealer rules, maximum fan, and permitted special hands before relying on it.

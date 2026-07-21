@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scoring | Mahjong League</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="brand" data-league-name>Mahjong League</div>
+    <nav><a href="index.html">Leaderboard</a><a href="submit.html">Submit Result</a><a href="history.html">History</a><a href="rules.html">Rules</a><a href="scoring.html">Scoring</a><a href="settlement.html">Reset</a><a href="admin.html">Admin</a></nav>
+  </div>
+</header>
+<main>
+  <h1>Hong Kong Mahjong scoring</h1>
+  <p class="lead">Use this page as a table-side reference. The cheat sheet uses a “discarder pays all” payment method and may not match every Hong Kong Mahjong variation.</p>
+
+  <div class="notice">
+    <strong>Confirm the house rules first.</strong> Agree on the minimum fan, whether Seven Pairs is allowed, the maximum fan, dealer treatment, and whether the payment procedure below applies to your league.
+  </div>
+
+  <div class="rule-grid">
+    <section class="card">
+      <h2>1. Confirm a legal win</h2>
+      <p>A standard winning hand contains four sets and a pair. Special hands, such as Thirteen Orphans or Nine Gates, follow their own structures.</p>
+    </section>
+    <section class="card">
+      <h2>2. Count fan</h2>
+      <p>Add the fan for every feature that applies. Indented or upgraded features replace the lower parent feature rather than stacking with it.</p>
+    </section>
+    <section class="card">
+      <h2>3. Convert fan to points</h2>
+      <p>Use the payment table below. The table caps all hands of 13 fan or more at 384 points.</p>
+    </section>
+    <section class="card">
+      <h2>4. Determine who pays</h2>
+      <p>Under this sheet’s system, all three opponents pay for a self-pick. For a discard win, only the discarder pays, at twice the listed point value.</p>
+    </section>
+  </div>
+
+  <section class="card table-wrap">
+    <h2>Payment table (new style)</h2>
+    <table class="score-table">
+      <thead><tr><th class="center">Fan</th><th class="right">Points</th><th class="center">Fan</th><th class="right">Points</th></tr></thead>
+      <tbody>
+        <tr><td class="center">0</td><td class="right">1</td><td class="center">7</td><td class="right">48</td></tr>
+        <tr><td class="center">1</td><td class="right">2</td><td class="center">8</td><td class="right">64</td></tr>
+        <tr><td class="center">2</td><td class="right">4</td><td class="center">9</td><td class="right">96</td></tr>
+        <tr><td class="center">3</td><td class="right">8</td><td class="center">10</td><td class="right">128</td></tr>
+        <tr><td class="center">4</td><td class="right">16</td><td class="center">11</td><td class="right">192</td></tr>
+        <tr><td class="center">5</td><td class="right">24</td><td class="center">12</td><td class="right">256</td></tr>
+        <tr><td class="center">6</td><td class="right">32</td><td class="center">13+</td><td class="right">384</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2>Worked payment examples</h2>
+    <div class="example-grid">
+      <div class="example-box">
+        <h3>Self-pick, 4 fan</h3>
+        <p>Four fan converts to 16 points. Each of the three opponents pays 16, so the winner receives <strong>48 total</strong>.</p>
+      </div>
+      <div class="example-box">
+        <h3>Discard win, 4 fan</h3>
+        <p>Four fan converts to 16 points. The discarder pays double, so the winner receives <strong>32 total</strong>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="section-heading-row">
+      <div>
+        <h2>Scoring cheat sheet</h2>
+        <p class="muted">Version 1.0, dated 3 April 2025, credited in the supplied document to /u/danma. These images are reproduced here as a convenient reference.</p>
+      </div>
+      <a class="button secondary-link" href="assets/hkmj-cheat-sheet-1.0.pdf" target="_blank" rel="noopener">Open PDF</a>
+    </div>
+    <div class="cheat-sheet-pages">
+      <figure>
+        <a href="assets/hkmj-cheat-sheet-page-1.png" target="_blank" rel="noopener"><img class="reference-image" src="assets/hkmj-cheat-sheet-page-1.png" alt="Hong Kong Mahjong fan scoring reference, page one, listing win actions, hand types, flowers and seasons, and special hands."></a>
+        <figcaption>Page 1: fan-scoring features and special hands.</figcaption>
+      </figure>
+      <figure>
+        <a href="assets/hkmj-cheat-sheet-page-2.png" target="_blank" rel="noopener"><img class="reference-image" src="assets/hkmj-cheat-sheet-page-2.png" alt="Hong Kong Mahjong scoring reference, page two, showing seating and flower numbers, tile terminology, payment table, and Cantonese terms."></a>
+        <figcaption>Page 2: seating, tiles, terminology, and payment table.</figcaption>
+      </figure>
+    </div>
+  </section>
+</main>
+<footer>Scoring conventions vary. Record your league’s selected rules before play begins.</footer>
+<script src="js/config.js"></script><script src="js/common.js"></script>
+</body>
+</html>

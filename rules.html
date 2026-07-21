@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rules | Mahjong League</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="brand" data-league-name>Mahjong League</div>
+    <nav><a href="index.html">Leaderboard</a><a href="submit.html">Submit Result</a><a href="history.html">History</a><a href="rules.html">Rules</a><a href="scoring.html">Scoring</a><a href="settlement.html">Reset</a><a href="admin.html">Admin</a></nav>
+  </div>
+</header>
+<main>
+  <h1>Mahjong rules</h1>
+  <p class="lead">A quick guide to the basic structure and flow of a four-player game. League-specific house rules should take priority if they differ from this page.</p>
+
+  <div class="rule-grid">
+    <section class="card">
+      <h2>Goal of the game</h2>
+      <p>Build a legal winning hand, normally made from <strong>four sets and one pair</strong>. Each player begins with 13 tiles; East begins with 14 and discards first.</p>
+    </section>
+    <section class="card">
+      <h2>Sets</h2>
+      <dl class="definition-list">
+        <div><dt>Chow</dt><dd>Three consecutive tiles from one suit. A discarded tile may normally be claimed only from the player immediately before you.</dd></div>
+        <div><dt>Pung</dt><dd>Three identical tiles. A discard may be claimed from any player.</dd></div>
+        <div><dt>Kong</dt><dd>Four identical tiles. After declaring it, draw a replacement tile from the dead wall.</dd></div>
+        <div><dt>Pair</dt><dd>Two identical tiles. It is usually completed from the wall, except when the tile completes a winning hand.</dd></div>
+      </dl>
+    </section>
+    <section class="card">
+      <h2>Turn order</h2>
+      <p>Play proceeds counter-clockwise around the table. Tiles are drawn from the wall in the direction specified by the setup diagram, starting from the break.</p>
+    </section>
+    <section class="card">
+      <h2>Claiming a discard</h2>
+      <p>A claimed set must be exposed. A winning claim takes priority over other claims; your league should decide how to resolve simultaneous claims.</p>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>Reference diagram</h2>
+    <p class="muted">The guide below shows the tile types, basic melds, wall setup, draw direction, play direction, and a sample winning hand. Select it to open the full-size image.</p>
+    <a class="reference-image-link" href="assets/mahjong-rules-overview.png" target="_blank" rel="noopener">
+      <img class="reference-image" src="assets/mahjong-rules-overview.png" alt="Mahjong rules overview showing four sets and a pair, chow, pung, kong, pair, honour and suited tiles, wall setup, draw direction, play direction, and a sample winning hand.">
+    </a>
+  </section>
+
+  <section class="card notice-card">
+    <h2>League decisions to record</h2>
+    <p>For clarity, your league should state its minimum fan, payment system, flower rules, dealer bonuses or repeats, time limits, false-win penalty, and procedure for disputed or simultaneous claims.</p>
+  </section>
+</main>
+<footer>Use the Scoring page for fan values and the payment table.</footer>
+<script src="js/config.js"></script><script src="js/common.js"></script>
+</body>
+</html>

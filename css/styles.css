@@ -120,3 +120,41 @@ footer { max-width: 1050px; margin: 0 auto; padding: 1rem; color: var(--muted); 
   .grid, .grid-4 { grid-template-columns: 1fr; }
   th, td { padding: .62rem .4rem; }
 }
+
+/* Rules and scoring reference pages */
+.rule-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+.rule-grid .card { margin: 0; }
+.definition-list { margin: 0; }
+.definition-list > div { padding: .55rem 0; border-bottom: 1px solid var(--border); }
+.definition-list > div:last-child { border-bottom: 0; }
+.definition-list dt { font-weight: 800; }
+.definition-list dd { margin: .15rem 0 0; color: #475467; }
+.reference-image-link { display: block; }
+.reference-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: .55rem;
+  background: white;
+}
+.notice-card { border-left: 5px solid #e6a700; }
+.score-table { max-width: 680px; margin: 0 auto; }
+.score-table td, .score-table th { font-size: 1rem; }
+.example-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.example-box { background: #f4f7f5; border: 1px solid var(--border); border-radius: .65rem; padding: 1rem; }
+.example-box h3 { margin: 0 0 .4rem; }
+.section-heading-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
+.secondary-link { background: #475467; }
+.cheat-sheet-pages { display: grid; gap: 1.25rem; }
+.cheat-sheet-pages figure { margin: 0; }
+.cheat-sheet-pages figcaption { margin-top: .45rem; color: var(--muted); font-size: .92rem; }
+@media (max-width: 720px) {
+  .rule-grid, .example-grid { grid-template-columns: 1fr; }
+  nav { gap: .2rem; }
+  nav a { padding: .42rem .52rem; font-size: .92rem; }
+}
