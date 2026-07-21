@@ -1,12 +1,17 @@
 let currentUser = null;
 let currentSettings = null;
+let approvedResultCount = 0;
 
 document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("login-form").addEventListener("submit", signIn);
   document.getElementById("signup-button").addEventListener("click", signUp);
   document.getElementById("logout-button").addEventListener("click", signOut);
+  document.getElementById("admin-logout-button").addEventListener("click", signOut);
   document.getElementById("player-form").addEventListener("submit", addPlayer);
   document.getElementById("settings-form").addEventListener("submit", saveSettings);
+  document.getElementById("purge-confirm").addEventListener("input", updatePurgeButton);
+  document.getElementById("purge-approved-button").addEventListener("click", purgeApprovedResults);
+
   if (!app.requireDb()) return;
 
   const { data } = await db.auth.getSession();
@@ -30,7 +35,7 @@ async function handleSession(session) {
 
   document.getElementById("admin-area").classList.remove("hidden");
   document.getElementById("admin-email").textContent = currentUser.email;
-  await Promise.all([loadPending(), loadPlayers(), loadSettings()]);
+  await Promise.all([loadPending(), loadApprovedResults(), loadPlayers(), loadSettings(), loadApprovedResultCount()]);
 }
 
 async function signIn(event) {
@@ -44,13 +49,17 @@ async function signIn(event) {
 async function signUp() {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
-  if (!email || password.length < 6) return app.setMessage("message", "Enter an email and a password of at least 6 characters.", "error");
+  if (!email || password.length < 6) {
+    return app.setMessage("message", "Enter an email and a password of at least 6 characters.", "error");
+  }
   const { error } = await db.auth.signUp({ email, password });
   if (error) return app.setMessage("message", error.message, "error");
   app.setMessage("message", "Account created. Check your email if confirmation is enabled, then promote this account using the SQL command in README.md.", "success");
 }
 
-async function signOut() { await db.auth.signOut(); }
+async function signOut() {
+  await db.auth.signOut();
+}
 
 async function loadPending() {
   const { data, error } = await db
@@ -59,7 +68,10 @@ async function loadPending() {
     .eq("status", "pending")
     .order("created_at", { ascending: true });
   const body = document.getElementById("pending-body");
-  if (error) return body.innerHTML = `<tr><td colspan="7" class="negative">${escapeHtml(error.message)}</td></tr>`;
+  if (error) {
+    body.innerHTML = `<tr><td colspan="7" class="negative">${escapeHtml(error.message)}</td></tr>`;
+    return;
+  }
   body.innerHTML = data?.length ? data.map(row => `
     <tr>
       <td>${escapeHtml(row.players?.name)}</td>
@@ -85,19 +97,89 @@ window.reviewSubmission = async function(id, status) {
   };
   const { error } = await db.from("submissions").update(payload).eq("id", id);
   if (error) return app.setMessage("message", error.message, "error");
-  await loadPending();
+  await Promise.all([loadPending(), loadApprovedResults(), loadApprovedResultCount()]);
 };
+
+async function loadApprovedResults() {
+  const body = document.getElementById("approved-body");
+  if (!body) return;
+
+  const { data, error } = await db
+    .from("submissions")
+    .select("id, match_date, start_value, end_value, net_score, notes, approved_at, players(name)")
+    .eq("status", "approved")
+    .order("match_date", { ascending: false })
+    .order("approved_at", { ascending: false });
+
+  if (error) {
+    body.innerHTML = `<tr><td colspan="7" class="negative">${escapeHtml(error.message)}</td></tr>`;
+    return;
+  }
+
+  body.innerHTML = data?.length ? data.map(row => `
+    <tr>
+      <td>${escapeHtml(row.players?.name || "Unknown player")}</td>
+      <td>${app.formatDate(row.match_date)}</td>
+      <td class="right">${row.start_value}</td>
+      <td class="right">${row.end_value}</td>
+      <td class="right ${app.scoreClass(row.net_score)}">${app.money(row.net_score)}</td>
+      <td>${escapeHtml(row.notes || "")}</td>
+      <td><button
+        class="small danger delete-approved-result"
+        type="button"
+        data-id="${escapeHtml(row.id)}"
+        data-player="${escapeHtml(row.players?.name || "Unknown player")}"
+        data-date="${escapeHtml(row.match_date)}">Delete</button></td>
+    </tr>`).join("") : `<tr><td colspan="7" class="muted">No approved results.</td></tr>`;
+
+  body.querySelectorAll(".delete-approved-result").forEach(button => {
+    button.addEventListener("click", () => deleteApprovedResult(
+      button.dataset.id,
+      button.dataset.player,
+      button.dataset.date,
+      button
+    ));
+  });
+}
+
+async function deleteApprovedResult(id, playerName, matchDate, button) {
+  if (!currentUser || !id) return;
+
+  const warning = `Permanently delete ${playerName}'s approved result from ${app.formatDate(matchDate)}? This will immediately change the leaderboard, History, and Stats and cannot be undone.`;
+  if (!confirm(warning)) return;
+
+  button.disabled = true;
+  button.textContent = "Deleting…";
+
+  const { error } = await db
+    .from("submissions")
+    .delete()
+    .eq("id", id)
+    .eq("status", "approved");
+
+  if (error) {
+    button.disabled = false;
+    button.textContent = "Delete";
+    return app.setMessage("message", error.message, "error");
+  }
+
+  app.setMessage("message", `${playerName}'s approved result was permanently deleted.`, "success");
+  await Promise.all([loadApprovedResults(), loadApprovedResultCount()]);
+}
 
 window.editSubmission = async function(id) {
   const { data, error } = await db.from("submissions").select("*").eq("id", id).single();
   if (error) return app.setMessage("message", error.message, "error");
-  const fields = ["start_white","start_red","start_blue","start_green","end_white","end_red","end_blue","end_green"];
+  const fields = ["start_white", "start_red", "start_blue", "start_green", "end_white", "end_red", "end_blue", "end_green"];
   const updates = {};
   for (const field of fields) {
     const answer = prompt(`Edit ${field.replaceAll("_", " ")}:`, data[field]);
     if (answer === null) return;
     const number = Number(answer);
-    if (!Number.isInteger(number) || number < 0) return alert("Chip counts must be non-negative whole numbers.");
+    if (!Number.isInteger(number) || number < 0) {
+      alert("Chip counts must be non-negative whole numbers.");
+      return;
+    }
     updates[field] = number;
   }
   const { error: updateError } = await db.from("submissions").update(updates).eq("id", id);
@@ -118,10 +200,16 @@ async function addPlayer(event) {
 async function loadPlayers() {
   const { data, error } = await db.from("players").select("id, name, active").order("name");
   const body = document.getElementById("players-body");
-  if (error) return body.innerHTML = `<tr><td colspan="3" class="negative">${escapeHtml(error.message)}</td></tr>`;
-  body.innerHTML = data?.map(p => `
-    <tr><td>${escapeHtml(p.name)}</td><td>${p.active ? "Active" : "Inactive"}</td>
-    <td><button class="small ${p.active ? "danger" : ""}" onclick="togglePlayer('${p.id}', ${!p.active})">${p.active ? "Deactivate" : "Reactivate"}</button></td></tr>`).join("") || "";
+  if (error) {
+    body.innerHTML = `<tr><td colspan="3" class="negative">${escapeHtml(error.message)}</td></tr>`;
+    return;
+  }
+  body.innerHTML = data?.map(player => `
+    <tr>
+      <td>${escapeHtml(player.name)}</td>
+      <td>${player.active ? "Active" : "Inactive"}</td>
+      <td><button class="small ${player.active ? "danger" : ""}" onclick="togglePlayer('${player.id}', ${!player.active})">${player.active ? "Deactivate" : "Reactivate"}</button></td>
+    </tr>`).join("") || "";
 }
 
 window.togglePlayer = async function(id, active) {
@@ -134,7 +222,7 @@ async function loadSettings() {
   const { data, error } = await db.from("league_settings").select("*").eq("id", 1).single();
   if (error) return app.setMessage("message", error.message, "error");
   currentSettings = data;
-  ["white","red","blue","green"].forEach(color => {
+  ["white", "red", "blue", "green"].forEach(color => {
     document.getElementById(`default-${color}`).value = data[`default_${color}`];
   });
 }
@@ -142,7 +230,7 @@ async function loadSettings() {
 async function saveSettings(event) {
   event.preventDefault();
   const payload = {};
-  ["white","red","blue","green"].forEach(color => {
+  ["white", "red", "blue", "green"].forEach(color => {
     payload[`default_${color}`] = Number(document.getElementById(`default-${color}`).value);
   });
   const { error } = await db.from("league_settings").update(payload).eq("id", 1);
@@ -150,6 +238,67 @@ async function saveSettings(event) {
   app.setMessage("message", "Default allocation updated.", "success");
 }
 
+async function loadApprovedResultCount() {
+  const countElement = document.getElementById("approved-result-count");
+  const { count, error } = await db
+    .from("submissions")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "approved");
+
+  if (error) {
+    approvedResultCount = 0;
+    countElement.className = "error";
+    countElement.textContent = `Unable to count approved results: ${error.message}`;
+    updatePurgeButton();
+    return;
+  }
+
+  approvedResultCount = Number(count || 0);
+  countElement.className = "notice";
+  countElement.textContent = approvedResultCount === 1
+    ? "There is 1 approved result available to purge."
+    : `There are ${approvedResultCount.toLocaleString()} approved results available to purge.`;
+  updatePurgeButton();
+}
+
+function updatePurgeButton() {
+  const input = document.getElementById("purge-confirm");
+  const button = document.getElementById("purge-approved-button");
+  button.disabled = input.value.trim() !== "PURGE" || approvedResultCount === 0;
+}
+
+async function purgeApprovedResults() {
+  if (!currentUser || approvedResultCount === 0) return;
+
+  const confirmation = document.getElementById("purge-confirm").value.trim();
+  if (confirmation !== "PURGE") return;
+
+  const warning = `Permanently delete ${approvedResultCount.toLocaleString()} approved result${approvedResultCount === 1 ? "" : "s"}? This cannot be undone and will erase the leaderboard, approved-result history, and player statistics.`;
+  if (!confirm(warning)) return;
+
+  const button = document.getElementById("purge-approved-button");
+  button.disabled = true;
+  button.textContent = "Purging…";
+
+  const { error } = await db
+    .from("submissions")
+    .delete()
+    .eq("status", "approved");
+
+  button.textContent = "Purge approved results";
+
+  if (error) {
+    updatePurgeButton();
+    return app.setMessage("message", error.message, "error");
+  }
+
+  document.getElementById("purge-confirm").value = "";
+  app.setMessage("message", "All approved results were permanently deleted. Pending and rejected submissions were left unchanged.", "success");
+  await Promise.all([loadApprovedResults(), loadApprovedResultCount()]);
+}
+
 function escapeHtml(value) {
-  return String(value ?? "").replace(/[&<>'"]/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"})[char]);
+  return String(value ?? "").replace(/[&<>'"]/g, char => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
+  })[char]);
 }
