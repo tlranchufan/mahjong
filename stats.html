@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Player Stats | Harrison Mahjong League</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="brand" data-league-name>Harrison Mahjong League</div>
+      <nav aria-label="Main navigation">
+        <a href="index.html">Leaderboard</a>
+        <a href="submit.html">Submit Result</a>
+        <a href="history.html">History</a>
+        <a href="stats.html">Stats</a>
+        <a href="rules.html">Rules</a>
+        <a href="scoring.html">Scoring</a>
+        <a href="settlement.html">Reset</a>
+        <a href="admin.html">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <h1>Player statistics</h1>
+    <p class="lead">Select a player to view all of their approved historical results.</p>
+
+    <div id="message" class="hidden" role="status"></div>
+
+    <section class="card">
+      <label for="stats-player-id">Player</label>
+      <select id="stats-player-id">
+        <option value="">Loading players…</option>
+      </select>
+    </section>
+
+    <section id="stats-content" class="hidden">
+      <div class="grid">
+        <div class="stat">
+          <span class="muted">Approved games</span>
+          <strong id="games-played">0</strong>
+        </div>
+        <div class="stat">
+          <span class="muted">Average net per game</span>
+          <strong id="average-net">0</strong>
+        </div>
+        <div class="stat">
+          <span class="muted">Total net</span>
+          <strong id="total-net">0</strong>
+        </div>
+        <div class="stat">
+          <span class="muted">Best / worst game</span>
+          <strong id="best-worst">—</strong>
+        </div>
+      </div>
+
+      <div class="card table-wrap">
+        <h2 id="results-heading">Historical results</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th class="right">Starting value</th>
+              <th class="right">Ending value</th>
+              <th class="right">Net</th>
+              <th>Note</th>
+            </tr>
+          </thead>
+          <tbody id="stats-results-body">
+            <tr><td colspan="5">Choose a player.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>Statistics use approved results only. Purged results are permanently removed from these totals.</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/stats.js"></script>
+</body>
+</html>
