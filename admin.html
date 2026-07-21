@@ -1,10 +1,148 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Admin | Harrison Mahjong League</title><link rel="stylesheet" href="css/styles.css"></head>
-<body><header><div class="header-inner"><div class="brand" data-league-name>Harrison Mahjong League</div><nav><a href="index.html">Leaderboard</a><a href="submit.html">Submit Result</a><a href="history.html">History</a><a href="rules.html">Rules</a><a href="scoring.html">Scoring</a><a href="settlement.html">Reset</a><a href="admin.html">Admin</a></nav></div></header>
-<main><h1>Administration</h1><div id="message" class="hidden"></div>
-<div id="auth-card" class="card"><h2>Sign in</h2><form id="login-form"><div class="grid"><div><label for="email">Email</label><input id="email" type="email" required></div><div><label for="password">Password</label><input id="password" type="password" minlength="6" required></div></div><div class="actions"><button type="submit">Sign in</button><button id="signup-button" class="secondary" type="button">Create first account</button></div></form></div>
-<div id="not-admin" class="card hidden"><h2>Account is not an administrator</h2><p>Signed in as <strong id="signed-in-email"></strong>. Promote this account using the SQL command in README.md.</p><button id="logout-button" class="secondary">Sign out</button></div>
-<div id="admin-area" class="hidden"><div class="actions"><span>Signed in as <strong id="admin-email"></strong></span><button class="secondary" onclick="db.auth.signOut()">Sign out</button></div>
-<div class="card table-wrap"><h2>Pending submissions</h2><table><thead><tr><th>Player</th><th>Date</th><th class="right">Start</th><th class="right">End</th><th class="right">Net</th><th>Note</th><th>Actions</th></tr></thead><tbody id="pending-body"></tbody></table></div>
-<div class="grid"><div class="card"><h2>Add player</h2><form id="player-form"><label for="new-player-name">Player name</label><input id="new-player-name" required><button type="submit" style="margin-top:.75rem">Add player</button></form><div class="table-wrap"><table><thead><tr><th>Name</th><th>Status</th><th></th></tr></thead><tbody id="players-body"></tbody></table></div></div>
-<div class="card"><h2>Default starting allocation</h2><form id="settings-form"><div class="grid"><div><label for="default-white">White</label><input id="default-white" type="number" min="0" step="1"></div><div><label for="default-red">Red</label><input id="default-red" type="number" min="0" step="1"></div><div><label for="default-blue">Blue</label><input id="default-blue" type="number" min="0" step="1"></div><div><label for="default-green">Green</label><input id="default-green" type="number" min="0" step="1"></div></div><button type="submit" style="margin-top:.75rem">Save allocation</button></form></div></div></div></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/config.js"></script><script src="js/supabase-client.js"></script><script src="js/common.js"></script><script src="js/admin.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin | Harrison Mahjong League</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="brand" data-league-name>Harrison Mahjong League</div>
+      <nav aria-label="Main navigation">
+        <a href="index.html">Leaderboard</a>
+        <a href="submit.html">Submit Result</a>
+        <a href="history.html">History</a>
+        <a href="stats.html">Stats</a>
+        <a href="rules.html">Rules</a>
+        <a href="scoring.html">Scoring</a>
+        <a href="settlement.html">Reset</a>
+        <a href="admin.html">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <h1>Administration</h1>
+    <div id="message" class="hidden" role="status"></div>
+
+    <div id="auth-card" class="card">
+      <h2>Sign in</h2>
+      <form id="login-form">
+        <div class="grid">
+          <div>
+            <label for="email">Email</label>
+            <input id="email" type="email" required>
+          </div>
+          <div>
+            <label for="password">Password</label>
+            <input id="password" type="password" minlength="6" required>
+          </div>
+        </div>
+        <div class="actions">
+          <button type="submit">Sign in</button>
+          <button id="signup-button" class="secondary" type="button">Create first account</button>
+        </div>
+      </form>
+    </div>
+
+    <div id="not-admin" class="card hidden">
+      <h2>Account is not an administrator</h2>
+      <p>Signed in as <strong id="signed-in-email"></strong>. Promote this account using the SQL command in README.md.</p>
+      <button id="logout-button" class="secondary" type="button">Sign out</button>
+    </div>
+
+    <div id="admin-area" class="hidden">
+      <div class="actions">
+        <span>Signed in as <strong id="admin-email"></strong></span>
+        <button id="admin-logout-button" class="secondary" type="button">Sign out</button>
+      </div>
+
+      <div class="card table-wrap">
+        <h2>Pending submissions</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Player</th>
+              <th>Date</th>
+              <th class="right">Start</th>
+              <th class="right">End</th>
+              <th class="right">Net</th>
+              <th>Note</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="pending-body"></tbody>
+        </table>
+      </div>
+
+      <div class="card table-wrap">
+        <h2>Approved results</h2>
+        <p class="muted">Delete a single approved result here. This removes that one player result from the leaderboard, History, and Stats. It cannot be undone.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Player</th>
+              <th>Date</th>
+              <th class="right">Start</th>
+              <th class="right">End</th>
+              <th class="right">Net</th>
+              <th>Note</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="approved-body"></tbody>
+        </table>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h2>Add player</h2>
+          <form id="player-form">
+            <label for="new-player-name">Player name</label>
+            <input id="new-player-name" required>
+            <button type="submit" style="margin-top:.75rem">Add player</button>
+          </form>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Status</th><th></th></tr></thead>
+              <tbody id="players-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Default starting allocation</h2>
+          <form id="settings-form">
+            <div class="grid">
+              <div><label for="default-white">White</label><input id="default-white" type="number" min="0" step="1"></div>
+              <div><label for="default-red">Red</label><input id="default-red" type="number" min="0" step="1"></div>
+              <div><label for="default-blue">Blue</label><input id="default-blue" type="number" min="0" step="1"></div>
+              <div><label for="default-green">Green</label><input id="default-green" type="number" min="0" step="1"></div>
+            </div>
+            <button type="submit" style="margin-top:.75rem">Save allocation</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Danger zone: purge approved results</h2>
+        <p>This permanently deletes every approved result. It clears the leaderboard, match history, and player statistics, but it does not delete players, pending submissions, rejected submissions, settings, or saved settlement records.</p>
+        <div id="approved-result-count" class="notice">Loading approved-result count…</div>
+        <label for="purge-confirm">Type <strong>PURGE</strong> to enable the button</label>
+        <input id="purge-confirm" autocomplete="off" placeholder="PURGE">
+        <div class="actions">
+          <button id="purge-approved-button" class="danger" type="button" disabled>Purge approved results</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
