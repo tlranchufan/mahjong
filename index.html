@@ -1,0 +1,7 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Leaderboard | Mahjong League</title><link rel="stylesheet" href="css/styles.css"></head>
+<body><header><div class="header-inner"><div class="brand" data-league-name>Mahjong League</div><nav><a href="index.html">Leaderboard</a><a href="submit.html">Submit Result</a><a href="history.html">History</a><a href="settlement.html">Reset</a><a href="admin.html">Admin</a></nav></div></header>
+<main><h1>Leaderboard</h1><p class="lead">Approved results since the most recent reset.</p><div id="message" class="hidden"></div>
+<div class="grid"><div class="stat"><span class="muted">Players</span><strong id="player-count">—</strong></div><div class="stat"><span class="muted">Balance check</span><strong id="total-balance">—</strong></div></div>
+<div class="card table-wrap"><table><thead><tr><th>Rank</th><th>Player</th><th class="right">Net chips</th><th>Last played</th></tr></thead><tbody id="leaderboard-body"></tbody></table></div>
+<div class="actions"><a class="button" href="submit.html">Submit a match result</a></div></main><footer>Only administrator-approved results affect the leaderboard.</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/config.js"></script><script src="js/supabase-client.js"></script><script src="js/common.js"></script><script src="js/leaderboard.js"></script></body></html>
