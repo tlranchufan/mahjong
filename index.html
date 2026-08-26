@@ -4,13 +4,48 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Leaderboard | Harrison Mahjong League</title>
-  <link rel="stylesheet" href="./css/styles.css?v=5">
+  <link rel="stylesheet" href="./css/styles.css?v=6">
+
+  <style>
+    /* Homepage logo safeguard: one compact logo only */
+    .brand::before {
+      content: none !important;
+      display: none !important;
+      background: none !important;
+    }
+    .brand {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: .45rem !important;
+      font-weight: 800 !important;
+      font-size: 1.15rem !important;
+      white-space: nowrap;
+    }
+    .brand-logo {
+      display: block !important;
+      width: 32px !important;
+      height: 32px !important;
+      max-width: 32px !important;
+      max-height: 32px !important;
+      flex: 0 0 32px !important;
+      object-fit: contain !important;
+    }
+    @media (max-width: 720px) {
+      .brand-logo {
+        width: 28px !important;
+        height: 28px !important;
+        max-width: 28px !important;
+        max-height: 28px !important;
+        flex-basis: 28px !important;
+      }
+    }
+  </style>
 </head>
 
 <body>
   <header>
     <div class="header-inner">
-      <div class="brand"><img class="brand-logo" src="./assets/harrison-mahjong-logo.png?v=5" alt="" aria-hidden="true"><span>Harrison Mahjong League</span></div>
+      <div class="brand"><img class="brand-logo" src="./assets/harrison-mahjong-logo.png?v=6" alt="" aria-hidden="true"><span>Harrison Mahjong League</span></div>
 
       <nav aria-label="Main navigation">
         <a href="./index.html">Leaderboard</a>
