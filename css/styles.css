@@ -33,7 +33,22 @@ header {
   justify-content: space-between;
   flex-wrap: wrap;
 }
-.brand { font-weight: 800; letter-spacing: .01em; font-size: 1.15rem; }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  font-weight: 800;
+  letter-spacing: .01em;
+  font-size: 1.15rem;
+}
+.brand::before {
+  content: "";
+  display: block;
+  width: 58px;
+  height: 58px;
+  flex: 0 0 58px;
+  background: url("../assets/harrison-mahjong-logo.png") center / contain no-repeat;
+}
 nav { display: flex; gap: .4rem; flex-wrap: wrap; }
 nav a {
   color: white;
@@ -157,4 +172,12 @@ footer { max-width: 1050px; margin: 0 auto; padding: 1rem; color: var(--muted); 
   .rule-grid, .example-grid { grid-template-columns: 1fr; }
   nav { gap: .2rem; }
   nav a { padding: .42rem .52rem; font-size: .92rem; }
+}
+
+@media (max-width: 720px) {
+  .brand::before {
+    width: 46px;
+    height: 46px;
+    flex-basis: 46px;
+  }
 }
